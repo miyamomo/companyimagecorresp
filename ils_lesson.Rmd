@@ -1,0 +1,50 @@
+---
+title: "ils_lesson"
+author: "takasumi.miyamoto"
+date: "6/20/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#library
+```{r}
+library(tidyverse)
+library(readxl)
+library(FactoMineR)
+library(MASS)
+library(ca)
+```
+
+### データ読み込み
+```{r}
+dat2 <- read.csv("~/PitchdeckExpress/02_Business/ILS/test/sample02.csv", row.names = 1) 
+dat2
+```
+### 独立性の検定（カイ二乗検定）
+企業と評価の独立性の確認。対立仮説：企業と評価の差は偶然に発生している。
+p値は0.05以下なので、0.05以下の確率で発生する事象が起きている→対立仮説は棄却される。
+```{r}
+chisq.test(dat2)
+```
+
+## コレスポンデンス分析
+```{r}
+dat2.co <- corresp(dat2, nf = 10)
+head(dat2.co)
+```
+
+### 累積寄与率
+```{r}
+dat2.ev <- dat2.co$cor^2
+round(100 * dat2.ev / sum(dat2.ev), 2)
+```
+
+### plot
+```{r}
+par(family = "HiraKakuProN-W3")
+biplot(dat2.co, cex = 0.8)
+```
+
